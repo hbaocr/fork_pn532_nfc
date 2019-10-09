@@ -1,0 +1,16 @@
+{
+  "name": "pn532-nfc-fork",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ndef": "^0.2.0",
+    "pn532": "^1.0.0",
+    "serialport": "^7.1.5"
+  }
+}
