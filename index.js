@@ -2,7 +2,7 @@
 
 const pn532 = require('pn532');
 const SerialPort = require('serialport');
-const serialPort = new SerialPort('/dev/cu.usbserial-AL00FN6Z', { baudRate: 115200 });
+const serialPort = new SerialPort('/dev/cu.usbserial-AL00FN6Z', { baudRate: 115200, autoOpen: true});
 const option={
     pollInterval:0 /**Disable software auto scantag */
 }
@@ -23,7 +23,7 @@ console.log('Waiting for rfid ready event...');
 rfid.on('ready', async function() {
     rfid.ScanTagWithEvent();//first scan
 });
-rfid.on('tag', async function(tag_info) {
+rfid.eventScanTag.on('tag', async function(tag_info) {
     if(last_uuid===tag_info.uid){
       
     }else{
@@ -36,19 +36,16 @@ rfid.on('tag', async function(tag_info) {
         ];
         let data = ndef.encodeMessage(messages);
         console.log('write_data_byte: ',data.length);
-
         let res= await rfid.writeNdefData(data);
-        console.log(res);
-
-        let fr= await rfid.InRelease();
-        log_cmd_ret_hex(fr,'Tag release');
+        //let fr= await rfid.InRelease();//release current card
+        //log_cmd_ret_hex(fr,'Tag release');
     }
     
-  
     rfid.ScanTagWithEvent();//scan next tag
 });
-rfid.on('tag_err', async function(tag_info) {
-   
+rfid.eventScanTag.on('tag_err', async function(err) {
+    console.error('tag err',err);
+    last_uuid='';
     rfid.ScanTagWithEvent();//scan next tag
 });
 
